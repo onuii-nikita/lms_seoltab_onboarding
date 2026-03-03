@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>설탭 학습 관리 시스템 - 온보딩 가이드</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #7C3AED;
+      --primary-light: #A78BFA;
+      --primary-bg: #F3EEFF;
+      --accent: #E91E63;
+      --gray-50: #FAFAFA;
+      --gray-100: #F5F5F5;
+      --gray-200: #EEEEEE;
+      --gray-300: #E0E0E0;
+      --gray-400: #BDBDBD;
+      --gray-500: #9E9E9E;
+      --gray-600: #757575;
+      --gray-700: #616161;
+      --gray-800: #424242;
+      --gray-900: #212121;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+      --shadow-xl: 0 12px 40px rgba(0,0,0,0.15);
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: white;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: 0;
+    }
+
+    /* 모바일 & 태블릿: 전체 화면 사용 */
+    .phone-frame {
+      width: 100%;
+      max-width: 810px;
+      height: 100vh;
+      height: 100dvh;
+      background: white;
+      border-radius: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 데스크탑 (태블릿 세로 모드보다 넓을 때): 중앙 프레임 */
+    @media (min-width: 860px) {
+      body {
+        background: #F0EEFF;
+        align-items: center;
+        padding: 24px;
+      }
+      .phone-frame {
+        max-width: 810px;
+        height: min(95vh, 1100px);
+        border-radius: 24px;
+        box-shadow: var(--shadow-xl), 0 0 0 1px rgba(0,0,0,0.05);
+      }
+    }
+
+    /* ========== PAGES ========== */
+    .page {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .page.active { display: block; }
+    .page::-webkit-scrollbar { width: 0; }
+
+    /* ========== PAGE 1: 과외 페이지 ========== */
+    .page1-header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .page1-header .tab {
+      font-size: 18px; font-weight: 700; color: var(--gray-400);
+      margin-right: 24px; cursor: pointer; padding-bottom: 8px;
+    }
+    .page1-header .tab.active { color: var(--gray-900); border-bottom: 2px solid var(--gray-900); }
+    .page1-header .user-info {
+      margin-left: auto; font-size: 13px; color: var(--gray-600);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .page1-header .user-info::before { content: '👤'; }
+
+    .page1-banner {
+      background: #FFF3E0; padding: 10px 20px;
+      font-size: 12px; color: #E65100; text-align: center;
+    }
+
+    .page1-content { padding: 16px 20px; padding-bottom: 40px; }
+    .page1-row { display: flex; gap: 12px; margin-bottom: 16px; }
+
+    .card-update-memo {
+      flex: 1; background: var(--gray-50); border: 1px solid var(--gray-200);
+      border-radius: var(--radius); padding: 16px;
+    }
+    .card-update-memo h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .card-update-memo p { font-size: 11px; color: var(--gray-500); }
+
+    .card-chatroom {
+      flex: 1.2; background: var(--accent); border-radius: var(--radius);
+      padding: 16px; color: white; display: flex; align-items: center; gap: 10px;
+    }
+    .card-chatroom .icon {
+      width: 36px; height: 36px; background: rgba(255,255,255,0.2);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .card-chatroom h3 { font-size: 14px; font-weight: 700; }
+    .card-chatroom p { font-size: 11px; opacity: 0.9; }
+
+    .card-homework-review { display: flex; gap: 12px; margin-bottom: 16px; }
+    .card-homework, .card-review {
+      flex: 1; background: var(--gray-50); border: 1px solid var(--gray-200);
+      border-radius: var(--radius); padding: 16px;
+    }
+    .card-homework h3, .card-review h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .card-homework p, .card-review p { font-size: 11px; color: var(--gray-500); line-height: 1.6; }
+
+    .card-cta-section { margin-bottom: 12px; position: relative; }
+    .card-cta {
+      border-radius: var(--radius); padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-cta.purple { background: #F3EEFF; border: 1px solid #E0D4FF; }
+    .card-cta.green { background: #E8F5E9; border: 1px solid #C8E6C9; }
+    .card-cta .cta-text p { font-size: 11px; color: var(--gray-500); margin-bottom: 2px; }
+    .card-cta .cta-text h3 { font-size: 14px; font-weight: 700; color: var(--gray-900); }
+    .card-cta .cta-btn {
+      background: var(--primary); color: white; border: none;
+      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+      flex-shrink: 0;
+    }
+    .card-cta.green .cta-btn { background: #43A047; }
+
+    .section-title-bar {
+      display: flex; align-items: center; justify-content: space-between; margin: 24px 0 12px;
+    }
+    .section-title-bar h2 { font-size: 16px; font-weight: 700; }
+    .section-title-bar .btns { display: flex; gap: 8px; }
+    .section-title-bar .btns button {
+      background: white; border: 1px solid var(--gray-300);
+      padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer;
+    }
+
+    .material-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; }
+    .material-card {
+      min-width: 100px; height: 130px; background: var(--gray-100);
+      border-radius: 8px; border: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--gray-400); flex-shrink: 0;
+    }
+
+    /* ========== PAGE 2: 학습 관리 시스템 ========== */
+    .page2-header { padding: 20px 20px 0; }
+    .page2-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .page2-logo .logo-icon {
+      width: 32px; height: 32px; background: var(--primary); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 800; font-size: 14px;
+    }
+    .page2-logo .logo-text { font-size: 20px; font-weight: 800; color: var(--gray-900); }
+    .page2-logo .logo-sub { font-size: 13px; color: var(--gray-500); margin-left: 4px; }
+
+    .page2-tabs { display: flex; border-bottom: 1px solid var(--gray-200); }
+    .page2-tabs .tab {
+      padding: 12px 16px; font-size: 14px; font-weight: 500;
+      color: var(--gray-400); cursor: pointer; border-bottom: 2px solid transparent;
+    }
+    .page2-tabs .tab.active { color: var(--gray-900); font-weight: 700; border-bottom-color: var(--gray-900); }
+
+    .page2-content { padding: 20px; }
+
+    .session-select {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 8px 14px; border: 1px solid var(--gray-300);
+      border-radius: 8px; font-size: 14px; font-weight: 600; margin-bottom: 20px;
+    }
+    .session-select::after { content: '▾'; font-size: 10px; color: var(--gray-400); }
+
+    .progress-bar-container {
+      background: var(--gray-100); border-radius: var(--radius); padding: 16px;
+      margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+    }
+    .progress-label { font-size: 13px; font-weight: 600; color: var(--gray-700); white-space: nowrap; }
+    .progress-track { flex: 1; height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden; }
+    .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px; }
+    .progress-text { font-size: 13px; color: var(--gray-500); white-space: nowrap; }
+    .progress-link { font-size: 12px; color: var(--primary); white-space: nowrap; cursor: pointer; }
+
+    .update-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #FFF8E1; border: 1px solid #FFE082; border-radius: 20px;
+      padding: 6px 14px; font-size: 12px; font-weight: 600; color: #F57F17;
+    }
+    .update-text { font-size: 13px; color: var(--gray-500); }
+
+    .tip-text {
+      font-size: 13px; color: var(--gray-500); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .tip-text::before { content: '💡'; }
+
+    .feature-card {
+      border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 14px; cursor: pointer;
+      transition: transform 0.2s; position: relative;
+    }
+    .feature-card:hover { transform: translateY(-1px); }
+    .feature-card.highlight { background: linear-gradient(135deg, #7C3AED, #A78BFA); color: white; }
+    .feature-card.normal { background: white; border: 1px solid var(--gray-200); color: var(--gray-900); }
+    .feature-card.coming-soon { background: white; border: 1px solid var(--gray-200); color: var(--gray-900); opacity: 0.85; }
+
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+    .feature-card.highlight .feature-icon { background: rgba(255,255,255,0.2); }
+    .feature-card.normal .feature-icon { background: var(--gray-100); }
+    .feature-card.coming-soon .feature-icon { background: var(--gray-100); }
+    .feature-card .feature-info h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .feature-card .feature-info p { font-size: 12px; opacity: 0.8; }
+    .feature-card .arrow { margin-left: auto; font-size: 18px; opacity: 0.6; }
+    .feature-card.highlight .feature-info p { color: rgba(255,255,255,0.85); }
+
+    .coming-tag {
+      position: absolute; top: -6px; right: 12px;
+      background: #FF6F00; color: white; font-size: 10px;
+      font-weight: 700; padding: 2px 8px; border-radius: 6px;
+    }
+
+    .tag-new {
+      display: inline-flex; background: #FF6F00; color: white;
+      font-size: 10px; font-weight: 700; padding: 2px 6px;
+      border-radius: 4px; margin-left: 6px; vertical-align: middle;
+    }
+
+    /* ========== SINGLE COACH OVERLAY (phone-frame child) ========== */
+    .coach-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 100;
+      display: none;
+      pointer-events: all;
+      overflow: hidden;
+    }
+    .coach-overlay.active { display: block; }
+
+    .coach-spotlight {
+      position: absolute;
+      border-radius: 16px;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
+      background: transparent;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 101;
+    }
+    .coach-spotlight-pulse {
+      position: absolute;
+      top: -4px; left: -4px; right: -4px; bottom: -4px;
+      border: 2px solid rgba(124, 58, 237, 0.5);
+      border-radius: 20px;
+      animation: pulse-ring 2s ease-out infinite;
+    }
+    @keyframes pulse-ring {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.02); }
+      100% { opacity: 0; transform: scale(1.05); }
+    }
+
+    .coach-tooltip {
+      position: absolute;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow-xl);
+      z-index: 102;
+      animation: tooltipIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes tooltipIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .coach-tooltip::before {
+      content: '';
+      position: absolute;
+      width: 14px; height: 14px;
+      background: white;
+      transform: rotate(45deg);
+    }
+    .coach-tooltip.arrow-top::before { top: -7px; left: 30px; }
+    .coach-tooltip.arrow-bottom::before { bottom: -7px; left: 30px; }
+    .coach-tooltip.no-arrow::before { display: none; }
+
+    .coach-step-indicator { display: flex; gap: 6px; margin-bottom: 12px; }
+    .coach-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gray-300); transition: all 0.3s;
+    }
+    .coach-dot.active { background: var(--primary); width: 20px; border-radius: 4px; }
+    .coach-dot.done { background: var(--primary-light); }
+
+    .coach-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--primary-bg); color: var(--primary);
+      font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 6px; margin-bottom: 10px;
+    }
+    .coach-tooltip h3 {
+      font-size: 16px; font-weight: 700; color: var(--gray-900);
+      margin-bottom: 6px; line-height: 1.4;
+    }
+    .coach-tooltip p {
+      font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 16px;
+    }
+    .coach-actions { display: flex; align-items: center; justify-content: space-between; }
+    .coach-skip {
+      font-size: 13px; color: var(--gray-400); cursor: pointer;
+      border: none; background: none; font-family: inherit;
+    }
+    .coach-skip:hover { color: var(--gray-600); }
+    .coach-next {
+      background: var(--primary); color: white; border: none;
+      padding: 10px 24px; border-radius: 10px; font-size: 14px;
+      font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    }
+    .coach-next:hover { background: #6D28D9; transform: translateY(-1px); }
+    .coach-next:active { transform: translateY(0); }
+
+    /* ========== FINAL CTA PAGE ========== */
+    .final-page {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(160deg, #7C3AED 0%, #4C1D95 100%);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 30px;
+      text-align: center;
+      color: white;
+    }
+    .final-page.active { display: flex; }
+
+    .final-confetti {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      overflow: hidden; pointer-events: none;
+    }
+    .final-check {
+      width: 80px; height: 80px; background: rgba(255,255,255,0.15);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin-bottom: 24px;
+      animation: checkBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes checkBounce {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .final-page h2 { font-size: 22px; font-weight: 800; margin-bottom: 12px; line-height: 1.4; }
+    .final-page .final-desc { font-size: 14px; opacity: 0.85; line-height: 1.7; margin-bottom: 32px; }
+
+    .final-features { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 36px; }
+    .final-feature-item {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.12); border-radius: 12px;
+      padding: 12px 16px; text-align: left; font-size: 13px;
+      font-weight: 500; backdrop-filter: blur(4px);
+    }
+    .final-feature-item .ff-icon { font-size: 18px; }
+    .final-feature-item .ff-check { margin-left: auto; font-size: 14px; color: #A5D6A7; }
+
+    .final-cta-btn {
+      width: 100%; background: white; color: var(--primary); border: none;
+      padding: 18px 32px; border-radius: 16px; font-size: 18px; font-weight: 800;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.2); margin-bottom: 12px;
+      animation: ctaPulse 2s ease-in-out infinite;
+    }
+    .final-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+    @keyframes ctaPulse {
+      0%, 100% { box-shadow: 0 6px 28px rgba(0,0,0,0.2); }
+      50% { box-shadow: 0 6px 28px rgba(255,255,255,0.3), 0 0 0 6px rgba(255,255,255,0.15); }
+    }
+
+    .final-later {
+      background: none; border: none;
+      color: rgba(255,255,255,0.5); padding: 12px 24px; border-radius: 12px;
+      font-size: 14px; cursor: pointer; font-family: inherit; width: 100%;
+    }
+    .final-later:hover { color: rgba(255,255,255,0.7); }
+
+    /* ========== INTRO SPLASH ========== */
+    .splash-page {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(160deg, #7C3AED 0%, #9333EA 50%, #6D28D9 100%);
+      z-index: 300;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px 30px; text-align: center; color: white;
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .splash-page.hidden { opacity: 0; transform: scale(1.05); pointer-events: none; }
+
+    .splash-icon {
+      width: 72px; height: 72px; background: rgba(255,255,255,0.15);
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin-bottom: 24px; backdrop-filter: blur(8px);
+    }
+    .splash-page h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+    .splash-page .splash-sub { font-size: 15px; opacity: 0.85; margin-bottom: 8px; }
+    .splash-page .splash-desc { font-size: 13px; opacity: 0.65; line-height: 1.6; margin-bottom: 40px; }
+
+    .splash-new-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.2); border-radius: 20px;
+      padding: 6px 14px; font-size: 12px; font-weight: 600;
+      margin-bottom: 20px; backdrop-filter: blur(4px);
+    }
+    .splash-start-btn {
+      width: 100%; background: white; color: var(--primary); border: none;
+      padding: 16px 32px; border-radius: 14px; font-size: 16px; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .splash-start-btn:hover { transform: translateY(-2px); }
+
+    /* ========== TRANSITIONS ========== */
+    .page-transition { animation: pageSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes pageSlideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ========== RESPONSIVE SCALING ========== */
+
+    /* 태블릿 이상 (500px+): 여유 있는 패딩, 큰 폰트 */
+    @media (min-width: 500px) {
+      .page1-header { padding: 20px 28px; }
+      .page1-header .tab { font-size: 20px; margin-right: 28px; }
+      .page1-banner { padding: 12px 28px; font-size: 13px; }
+      .page1-content { padding: 20px 28px; padding-bottom: 40px; }
+      .card-update-memo { padding: 20px; }
+      .card-update-memo h3 { font-size: 16px; }
+      .card-update-memo p { font-size: 12px; }
+      .card-chatroom { padding: 20px; }
+      .card-chatroom h3 { font-size: 16px; }
+      .card-chatroom p { font-size: 12px; }
+      .card-homework, .card-review { padding: 20px; }
+      .card-homework h3, .card-review h3 { font-size: 16px; }
+      .card-homework p, .card-review p { font-size: 12px; }
+      .card-cta { padding: 20px 24px; }
+      .card-cta .cta-text p { font-size: 12px; }
+      .card-cta .cta-text h3 { font-size: 16px; }
+      .card-cta .cta-btn { padding: 10px 20px; font-size: 14px; }
+      .section-title-bar h2 { font-size: 18px; }
+
+      .page2-header { padding: 24px 28px 0; }
+      .page2-logo .logo-text { font-size: 24px; }
+      .page2-logo .logo-sub { font-size: 15px; }
+      .page2-tabs .tab { padding: 14px 20px; font-size: 15px; }
+      .page2-content { padding: 24px 28px; }
+      .session-select { font-size: 16px; padding: 10px 18px; }
+      .progress-bar-container { padding: 20px; }
+      .progress-label { font-size: 15px; }
+      .feature-card { padding: 22px 24px; margin-bottom: 14px; }
+      .feature-card .feature-info h3 { font-size: 17px; }
+      .feature-card .feature-info p { font-size: 13px; }
+      .feature-icon { width: 50px; height: 50px; font-size: 22px; }
+
+      .coach-tooltip { padding: 24px; }
+      .coach-tooltip h3 { font-size: 18px; }
+      .coach-tooltip p { font-size: 14px; }
+      .coach-next { padding: 12px 28px; font-size: 15px; }
+
+      .splash-page { padding: 48px 40px; }
+      .splash-page h1 { font-size: 28px; }
+      .splash-page .splash-sub { font-size: 17px; }
+      .splash-page .splash-desc { font-size: 14px; }
+      .splash-start-btn { font-size: 18px; padding: 18px 36px; }
+
+      .final-page { padding: 48px 40px; }
+      .final-page h2 { font-size: 26px; }
+      .final-page .final-desc { font-size: 16px; }
+      .final-cta-btn { font-size: 18px; padding: 18px 36px; }
+      .final-feature-item { padding: 14px 20px; font-size: 15px; }
+    }
+
+    /* 작은 모바일 (375px 미만): 컴팩트 */
+    @media (max-width: 374px) {
+      .page1-header { padding: 12px 14px; }
+      .page1-header .tab { font-size: 15px; margin-right: 16px; }
+      .page1-content { padding: 12px 14px; }
+      .page1-row { flex-direction: column; }
+      .card-homework-review { flex-direction: column; }
+      .card-cta { flex-direction: column; gap: 10px; align-items: flex-start; }
+      .card-cta .cta-btn { align-self: flex-end; }
+
+      .page2-content { padding: 16px 14px; }
+      .progress-bar-container { flex-wrap: wrap; gap: 8px; }
+      .progress-link { width: 100%; text-align: right; }
+
+      .splash-page { padding: 32px 20px; }
+      .splash-page h1 { font-size: 20px; }
+      .final-page { padding: 32px 20px; }
+      .final-page h2 { font-size: 18px; }
+    }
+
+    /* safe area (아이폰 노치 등) */
+    @supports (padding-top: env(safe-area-inset-top)) {
+      .page1-header,
+      .page2-header,
+      .splash-page,
+      .final-page {
+        padding-top: max(16px, env(safe-area-inset-top));
+      }
+      .page1-content,
+      .page2-content {
+        padding-bottom: max(40px, env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame" id="app">
+
+  <!-- ========== SPLASH ========== -->
+  <div class="splash-page" id="splashPage">
+    <div class="splash-icon">🎓</div>
+    <div class="splash-new-badge">✨ NEW 업데이트</div>
+    <h1>학습 관리 시스템이<br>새롭게 찾아왔어요!</h1>
+    <p class="splash-sub">내신 대비 시스템이 더 강력해졌습니다</p>
+    <p class="splash-desc">학생 진단 · 자료 추천 · 학습 계획까지<br>한곳에서 관리하세요</p>
+    <button class="splash-start-btn" onclick="startOnboarding()">새로운 기능 둘러보기 →</button>
+  </div>
+
+  <!-- ========== PAGE 1: 과외 ========== -->
+  <div class="page" id="page1">
+    <div class="page1-header">
+      <span class="tab">홈</span>
+      <span class="tab active">과외</span>
+      <span class="tab" style="color: var(--primary-light);">자습</span>
+      <span class="user-info" id="userInfo">영어 · 과외방</span>
+    </div>
+    <div class="page1-banner">⚠️ 이전 과외 마치기를 필수로 해주셔야 학생이 다음 수업을 준비할 수 있습니다.</div>
+    <div class="page1-content">
+      <div class="page1-row">
+        <div class="card-update-memo">
+          <h3>학생의 필기 업데이트하기</h3>
+          <p>학생의 필기를 새로고침하세요!</p>
+        </div>
+        <div class="card-chatroom">
+          <div class="icon">💬</div>
+          <div>
+            <h3>과외채팅방 & 과외하기</h3>
+            <p>다음 과외 일정 : 03/23(월) 오후 08:00</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-homework-review">
+        <div class="card-homework">
+          <h3>숙제 <span style="font-weight:400;font-size:11px;color:var(--gray-500);">03/23 (월) 오후 08:00까지</span></h3>
+          <p>1. ...<br>2. ...<br>3. ...</p>
+        </div>
+        <div class="card-review">
+          <h3>지난 수업 리뷰</h3>
+          <p>📌 수업 내용 및 다음 수업 계획 :<br>📌 강점 및 취약점 :<br>📌 학습 태도 :</p>
+        </div>
+      </div>
+
+      <div class="card-cta-section" id="ctaSection1">
+        <div class="card-cta purple">
+          <div class="cta-text">
+            <p id="ctaDesc1">권장 자료: 예상문제(형성평가) – 성취도 분석 제공!</p>
+            <h3 id="ctaTitle1">이그잼포유 내신 자료 다운로드</h3>
+          </div>
+          <button class="cta-btn">바로가기</button>
+        </div>
+      </div>
+
+      <div class="card-cta-section" id="ctaSection2">
+        <div class="card-cta green">
+          <div class="cta-text">
+            <p> 학습 자료 추천/ 성취도 분석 / 학습 피드백이 제공되는</p>
+            <h3>학습 관리 시스템 NEW <span class="tag-new">NEW</span></h3>
+          </div>
+          <button class="cta-btn" style="background:#43A047;">바로가기</button>
+        </div>
+      </div>
+
+      <div class="section-title-bar">
+        <h2>1회차 수업 준비함</h2>
+        <div class="btns">
+          <button>수업 자료 추가하기</button>
+          <button>자료 선택</button>
+        </div>
+      </div>
+      <div class="material-row">
+        <div class="material-card">자료 1</div>
+        <div class="material-card">자료 2</div>
+        <div class="material-card">자료 3</div>
+        <div class="material-card">자료 4</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PAGE 2: 학습 관리 시스템 ========== -->
+  <div class="page" id="page2">
+    <div class="page2-header">
+      <div class="page2-logo">
+        <div class="logo-icon">S</div>
+        <span class="logo-text">설탭</span>
+        <span class="logo-sub">학습 관리 시스템</span>
+      </div>
+      <div class="page2-tabs">
+        <span class="tab active">학습 현황</span>
+        <span class="tab">내신 성취도</span>
+        <span class="tab">AI 피드백</span>
+        <span class="tab">레벨테스트</span>
+      </div>
+    </div>
+    <div class="page2-content">
+      <div class="session-select">1회차</div>
+
+      <div class="progress-bar-container">
+        <span class="progress-label">과제 진행률</span>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+        <span class="progress-text">0%</span>
+        <span class="progress-link">성취도 보기 →</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+        <div class="update-badge">🎉 새학기 업데이트!</div>
+        <span class="update-text">할당된 과제가 없습니다. 이렇게 시작해보세요!</span>
+      </div>
+
+      <div class="tip-text">처음엔 자료 추천받기로 시작하면 가장 쉬워요</div>
+
+      <div class="feature-card highlight" id="featureDiagnose" onclick="showFinalPage()">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-info">
+          <h3>학생 상태 진단하고 자료 추천받기</h3>
+          <p>1분 레벨 파악 후 최적 학습 자료 안내</p>
+        </div>
+        <span class="arrow">›</span>
+      </div>
+
+      <div class="feature-card normal" id="featureRegister" onclick="showFinalPage()">
+        <div class="feature-icon">📁</div>
+        <div class="feature-info">
+          <h3>자료 등록하기</h3>
+          <p>보유한 교재, 학습 자료 업로드</p>
+        </div>
+        <span class="arrow">›</span>
+      </div>
+
+      <div class="feature-card coming-soon" id="featurePlan" onclick="showFinalPage()">
+        <div class="coming-tag">오픈 예정</div>
+        <div class="feature-icon">📅</div>
+        <div class="feature-info">
+          <h3>학생과 함께 학습 계획 세우기</h3>
+          <p>학습 자료 기반 학습 및 시험 계획표</p>
+        </div>
+        <span class="arrow">›</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== UNIFIED COACH OVERLAY (phone-frame 직속) ========== -->
+  <div class="coach-overlay" id="coachOverlay">
+    <div class="coach-spotlight" id="spotlight">
+      <div class="coach-spotlight-pulse"></div>
+    </div>
+    <div class="coach-tooltip no-arrow" id="tooltip">
+      <div class="coach-step-indicator" id="stepIndicator"></div>
+      <div class="coach-badge" id="badge"></div>
+      <h3 id="tooltipTitle"></h3>
+      <p id="tooltipDesc"></p>
+      <div class="coach-actions">
+        <button class="coach-skip" onclick="skipAll()">건너뛰기</button>
+        <button class="coach-next" id="nextBtn" onclick="nextStep()">다음 <span>→</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FINAL CTA ========== -->
+  <div class="final-page" id="finalPage">
+    <div class="final-confetti" id="confetti"></div>
+    <div class="final-check">🎉</div>
+    <h2>가이드 완료!<br>지금 바로 시작해보세요</h2>
+    <p class="final-desc">학생 상태를 진단받고<br>최적의 학습 자료를 추천받아보세요</p>
+    <button class="final-cta-btn" onclick="openApp()">🔍 설탭에서 학생 진단받고 자료 추천받기</button>
+    <button class="final-later" onclick="closeFinal()">나중에 할게요</button>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const subject = (params.get('subject') || 'english').toLowerCase();
+
+(function applySubject() {
+  const isM = subject === 'math';
+  document.getElementById('userInfo').textContent = isM ? '수학 · 과외방' : '영어 · 과외방';
+  document.getElementById('ctaDesc1').textContent = isM
+    ? '권장 자료: 내신 대비 추천 – 성취도 분석 제공!'
+    : '권장 자료: 예상문제(형성평가) – 성취도 분석 제공!';
+  document.getElementById('ctaTitle1').textContent = isM
+    ? '매쓰플랫 내신 자료 다운로드'
+    : '이그잼포유 내신 자료 다운로드';
+})();
+
+const TOTAL_STEPS = 5;
+let currentStep = 0;
+
+const steps = [
+  {
+    page: 'page1',
+    targetId: 'ctaSection2',
+    badge: '🔄 업데이트',
+    title: '학습 관리 시스템으로 새단장!',
+    desc: '기존 "내신 대비 시스템에 자료 등록" 기능이 더 강력한 학습 관리 시스템으로 업데이트되었어요. 버튼을 눌러 새로운 기능을 확인해보세요!',
+    btnText: '학습 관리 시스템 보기 →'
+  },
+  {
+    page: 'page2',
+    targetId: null,
+    badge: '👋 새 화면',
+    title: '설탭 학습 관리 시스템',
+    desc: '학생의 학습을 체계적으로 관리할 수 있는 새로운 시스템이에요. 학습 현황, 내신 성취도, AI 피드백까지 한눈에 확인하세요!',
+    btnText: '다음 →'
+  },
+  {
+    page: 'page2',
+    targetId: 'featureDiagnose',
+    badge: '⭐ 핵심 기능',
+    title: '학생 상태 진단 & 자료 추천',
+    desc: '1분이면 학생의 레벨을 파악하고, 최적의 학습 자료를 추천받을 수 있어요. 처음 시작하기에 가장 좋은 방법이에요!',
+    btnText: '다음 →'
+  },
+  {
+    page: 'page2',
+    targetId: 'featureRegister',
+    badge: '📁 자료 관리',
+    title: '추천 자료를 바로 등록!',
+    desc: '진단 후 추천받은 자료를 다운로드하고, 여기서 바로 등록하면 학생에게 과제로 할당할 수 있어요. 자동 채점과 성취도 분석도 함께 제공됩니다.',
+    btnText: '다음 →'
+  },
+  {
+    page: 'page2',
+    targetId: 'featurePlan',
+    badge: '🔜 Coming Soon',
+    title: '학습 계획 세우기 (오픈 예정)',
+    desc: '곧 학생과 함께 학습 계획을 세울 수 있는 기능이 오픈됩니다! 평소 학습 계획표 부터 시험 계획표까지 학생과 계획표를 세울 수 있습니다.',
+    btnText: '가이드 완료 🎉'
+  }
+];
+
+function startOnboarding() {
+  const splash = document.getElementById('splashPage');
+  splash.classList.add('hidden');
+  setTimeout(() => {
+    splash.style.display = 'none';
+    currentStep = 0;
+    showStep(currentStep);
+  }, 400);
+}
+
+function showStep(idx) {
+  const step = steps[idx];
+  const frame = document.getElementById('app');
+  const FRAME_H = frame.offsetHeight;
+  const FRAME_W = frame.offsetWidth;
+  const PAD = 16;
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const overlay = document.getElementById('coachOverlay');
+  overlay.classList.remove('active');
+
+  const page = document.getElementById(step.page);
+  page.classList.add('active');
+
+  if (idx === 1) {
+    page.classList.add('page-transition');
+    setTimeout(() => page.classList.remove('page-transition'), 400);
+  }
+
+  if (step.targetId) {
+    const target = document.getElementById(step.targetId);
+    target.scrollIntoView({ block: 'center', behavior: 'instant' });
+  } else {
+    page.scrollTop = 0;
+  }
+
+  const delay = (idx === 1) ? 350 : 100;
+
+  setTimeout(() => {
+    overlay.classList.add('active');
+
+    const spotlight = document.getElementById('spotlight');
+    const tooltip = document.getElementById('tooltip');
+
+    renderStepIndicator(idx);
+    document.getElementById('badge').innerHTML = step.badge;
+    document.getElementById('tooltipTitle').textContent = step.title;
+    document.getElementById('tooltipDesc').textContent = step.desc;
+    document.getElementById('nextBtn').innerHTML = step.btnText;
+
+    tooltip.style.transform = '';
+
+    if (step.targetId) {
+      const target = document.getElementById(step.targetId);
+      const frameRect = frame.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+
+      const sTop = targetRect.top - frameRect.top - 4;
+      const sLeft = targetRect.left - frameRect.left - 4;
+      const sW = targetRect.width + 8;
+      const sH = targetRect.height + 8;
+
+      spotlight.style.top = sTop + 'px';
+      spotlight.style.left = sLeft + 'px';
+      spotlight.style.width = sW + 'px';
+      spotlight.style.height = sH + 'px';
+      spotlight.style.display = 'block';
+
+      const tooltipW = FRAME_W - PAD * 2;
+      tooltip.style.width = tooltipW + 'px';
+      tooltip.style.left = PAD + 'px';
+
+      const spaceBelow = FRAME_H - (sTop + sH + 12);
+      const spaceAbove = sTop - 12;
+
+      tooltip.style.bottom = 'auto';
+      tooltip.style.top = 'auto';
+
+      if (spaceBelow >= 180) {
+        tooltip.className = 'coach-tooltip arrow-top';
+        tooltip.style.top = (sTop + sH + 12) + 'px';
+      } else if (spaceAbove >= 180) {
+        tooltip.className = 'coach-tooltip arrow-bottom';
+        const tipBottom = FRAME_H - sTop + 12;
+        tooltip.style.bottom = tipBottom + 'px';
+      } else {
+        tooltip.className = 'coach-tooltip no-arrow';
+        const centerY = Math.max(PAD, Math.min(FRAME_H - 250, sTop + sH / 2 - 100));
+        tooltip.style.top = centerY + 'px';
+      }
+    } else {
+      spotlight.style.display = 'none';
+      tooltip.className = 'coach-tooltip no-arrow';
+      tooltip.style.width = (FRAME_W - PAD * 2) + 'px';
+      tooltip.style.left = PAD + 'px';
+      tooltip.style.top = '50%';
+      tooltip.style.bottom = 'auto';
+      tooltip.style.transform = 'translateY(-50%)';
+    }
+
+    tooltip.style.animation = 'none';
+    tooltip.offsetHeight;
+    tooltip.style.animation = 'tooltipIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  }, delay);
+}
+
+function renderStepIndicator(activeIdx) {
+  const container = document.getElementById('stepIndicator');
+  container.innerHTML = '';
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'coach-dot';
+    if (i === activeIdx) dot.classList.add('active');
+    else if (i < activeIdx) dot.classList.add('done');
+    container.appendChild(dot);
+  }
+}
+
+function nextStep() {
+  currentStep++;
+  if (currentStep >= TOTAL_STEPS) {
+    document.getElementById('coachOverlay').classList.remove('active');
+    showFinalPage();
+    return;
+  }
+  showStep(currentStep);
+}
+
+function skipAll() {
+  document.getElementById('coachOverlay').classList.remove('active');
+  showFinalPage();
+}
+
+function showFinalPage() {
+  document.getElementById('finalPage').classList.add('active');
+  createConfetti();
+}
+
+function openApp() {
+  alert('설탭 학습 관리 시스템으로 이동합니다!\n(실제 앱에서는 딥링크 또는 앱 전환이 실행됩니다)');
+}
+
+function closeFinal() {
+  document.getElementById('finalPage').classList.remove('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page2').classList.add('active');
+}
+
+function createConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#7C3AED', '#A78BFA', '#FCD34D', '#F472B6', '#34D399', '#60A5FA'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    const rot = Math.random() * 720;
+    piece.style.cssText = `
+      position:absolute;
+      width:${Math.random()*8+4}px; height:${Math.random()*8+4}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      left:${Math.random()*100}%; top:-10px; opacity:0.8;
+      animation:confettiFall ${Math.random()*2+2}s ease-in ${Math.random()*0.5}s forwards;
+    `;
+    container.appendChild(piece);
+  }
+  if (!document.getElementById('confettiStyle')) {
+    const style = document.createElement('style');
+    style.id = 'confettiStyle';
+    style.textContent = `@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:.9}100%{transform:translateY(800px) rotate(540deg);opacity:0}}`;
+    document.head.appendChild(style);
+  }
+}
+</script>
+
+</body>
+</html>
