@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KHKMP7RP');</script>
+  <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>설탭 학습 관리 시스템 - 온보딩 가이드</title>
@@ -540,6 +547,10 @@
   </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KHKMP7RP"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <div class="phone-frame" id="app">
 
@@ -715,6 +726,21 @@
 </div>
 
 <script>
+window.dataLayer = window.dataLayer || [];
+
+const pathSegments = window.location.pathname.split('/').filter(Boolean);
+const teacherId = pathSegments[pathSegments.length - 1] || '';
+
+function pushGTMEvent(eventName) {
+  dataLayer.push({
+    event: eventName,
+    teacher_id: teacherId,
+    event_ts: new Date().toISOString()
+  });
+}
+
+pushGTMEvent('pageview_onboarding_start');
+
 const params = new URLSearchParams(window.location.search);
 const subject = (params.get('subject') || 'english').toLowerCase();
 
@@ -776,6 +802,7 @@ const steps = [
 ];
 
 function startOnboarding() {
+  pushGTMEvent('onboarding_start');
   const splash = document.getElementById('splashPage');
   splash.classList.add('hidden');
   setTimeout(() => {
@@ -894,6 +921,7 @@ function renderStepIndicator(activeIdx) {
 }
 
 function nextStep() {
+  pushGTMEvent('onboarding_next' + (currentStep + 1));
   currentStep++;
   if (currentStep >= TOTAL_STEPS) {
     document.getElementById('coachOverlay').classList.remove('active');
@@ -904,20 +932,24 @@ function nextStep() {
 }
 
 function skipAll() {
+  pushGTMEvent('onboarding_skip');
   document.getElementById('coachOverlay').classList.remove('active');
   showFinalPage();
 }
 
 function showFinalPage() {
+  pushGTMEvent('pageview_onboarding_complete');
   document.getElementById('finalPage').classList.add('active');
   createConfetti();
 }
 
 function openApp() {
-  alert('설탭 학습 관리 시스템으로 이동합니다!\n(실제 앱에서는 딥링크 또는 앱 전환이 실행됩니다)');
+  pushGTMEvent('final_cta_click');
+  window.location.href = 'http://dlink.seoltab.com/';
 }
 
 function closeFinal() {
+  pushGTMEvent('final_dismiss');
   document.getElementById('finalPage').classList.remove('active');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page2').classList.add('active');
