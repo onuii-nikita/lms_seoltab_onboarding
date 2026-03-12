@@ -767,7 +767,7 @@ const steps = [
 ];
 
 function startOnboarding() {
-  pushGTMEvent('onboarding_start');
+  pushGTMEvent('click_onboarding_start');
   const splash = document.getElementById('splashPage');
   splash.classList.add('hidden');
   setTimeout(() => {
@@ -886,7 +886,7 @@ function renderStepIndicator(activeIdx) {
 }
 
 function nextStep() {
-  pushGTMEvent('onboarding_next' + (currentStep + 1));
+  pushGTMEvent('click_onboarding_next' + (currentStep + 1));
   currentStep++;
   if (currentStep >= TOTAL_STEPS) {
     document.getElementById('coachOverlay').classList.remove('active');
@@ -897,7 +897,7 @@ function nextStep() {
 }
 
 function skipAll() {
-  pushGTMEvent('onboarding_skip');
+  pushGTMEvent('click_onboarding_skip');
   document.getElementById('coachOverlay').classList.remove('active');
   showFinalPage();
 }
@@ -909,12 +909,12 @@ function showFinalPage() {
 }
 
 function openApp() {
-  pushGTMEvent('final_cta_click');
+  pushGTMEvent('click_final_cta');
   window.location.href = 'http://dlink.seoltab.com/';
 }
 
 function closeFinal() {
-  pushGTMEvent('final_dismiss');
+  pushGTMEvent('click_final_dismiss');
   document.getElementById('finalPage').classList.remove('active');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page2').classList.add('active');
