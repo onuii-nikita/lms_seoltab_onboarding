@@ -662,35 +662,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
         <div class="update-badge">🎉 새학기 업데이트!</div>
-        <span class="update-text">할당된 과제가 없습니다. 이렇게 시작해보세요!</span>
+        <span class="update-text">처음엔 자료 추천받기로 시작하면 가장 쉬워요</span>
       </div>
 
-      <div class="tip-text">처음엔 자료 추천받기로 시작하면 가장 쉬워요</div>
+      <div class="tip-text">할당된 과제가 없습니다. 이렇게 시작해보세요!</div>
 
       <div class="feature-card highlight" id="featureDiagnose" onclick="showFinalPage()">
         <div class="feature-icon">🔍</div>
         <div class="feature-info">
-          <h3>학생 상태 진단하고 자료 추천받기</h3>
-          <p>1분 레벨 파악 후 최적 학습 자료 안내</p>
-        </div>
-        <span class="arrow">›</span>
-      </div>
-
-      <div class="feature-card normal" id="featureRegister" onclick="showFinalPage()">
-        <div class="feature-icon">📁</div>
-        <div class="feature-info">
-          <h3>자료 등록하기</h3>
-          <p>보유한 교재, 학습 자료 업로드</p>
-        </div>
-        <span class="arrow">›</span>
-      </div>
-
-      <div class="feature-card coming-soon" id="featurePlan" onclick="showFinalPage()">
-        <div class="coming-tag">오픈 예정</div>
-        <div class="feature-icon">📅</div>
-        <div class="feature-info">
-          <h3>학생과 함께 학습 계획 세우기</h3>
-          <p>학습 자료 기반 학습 및 시험 계획표</p>
+          <h3>자료 추천 받고 등록하기</h3>
+          <p>1분 레벨 파악 후 최적 학습 자료 추천 및 등록</p>
         </div>
         <span class="arrow">›</span>
       </div>
@@ -755,7 +736,7 @@ const subject = (params.get('subject') || 'english').toLowerCase();
     : '이그잼포유 내신 자료 다운로드';
 })();
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 3;
 let currentStep = 0;
 
 const steps = [
@@ -779,24 +760,8 @@ const steps = [
     page: 'page2',
     targetId: 'featureDiagnose',
     badge: '⭐ 핵심 기능',
-    title: '학생 상태 진단 & 자료 추천',
-    desc: '1분이면 학생의 레벨을 파악하고, 최적의 학습 자료를 추천받을 수 있어요. 처음 시작하기에 가장 좋은 방법이에요!',
-    btnText: '다음 →'
-  },
-  {
-    page: 'page2',
-    targetId: 'featureRegister',
-    badge: '📁 자료 관리',
-    title: '추천 자료를 바로 등록!',
-    desc: '진단 후 추천받은 자료를 다운로드하고, 여기서 바로 등록하면 학생에게 과제로 할당할 수 있어요. 자동 채점과 성취도 분석도 함께 제공됩니다.',
-    btnText: '다음 →'
-  },
-  {
-    page: 'page2',
-    targetId: 'featurePlan',
-    badge: '🔜 Coming Soon',
-    title: '학습 계획 세우기 (오픈 예정)',
-    desc: '곧 학생과 함께 학습 계획을 세울 수 있는 기능이 오픈됩니다! 평소 학습 계획표 부터 시험 계획표까지 학생과 계획표를 세울 수 있습니다.',
+    title: '자료 추천 받고 등록하기',
+    desc: '1분이면 학생의 레벨을 파악하고, 최적의 학습 자료를 추천받을 수 있어요. 자동 채점 가능 자료를 등록하면 학생에게 바로 과제로 할당하고 자동 채점과 성취도 분석까지 제공됩니다.',
     btnText: '가이드 완료 🎉'
   }
 ];
